@@ -2,6 +2,12 @@
 
 @section('content')
 
+    @if(Session::has('deleted_user'))
+
+        <p class="bg-danger">{{session('deleted_user')}}</p>
+
+    @endif
+
     <h1>Users</h1>
 
     <table class="table">
@@ -41,13 +47,11 @@
              @endforeach
 
         @endif
-
-        <tr>
-            <td>Mary</td>
-            <td>Moe</td>
-            <td>mary@example.com</td>
-        </tr>
-
+        {{--<tr>--}}
+            {{--<td>Mary</td>--}}
+            {{--<td>Moe</td>--}}
+            {{--<td>mary@example.com</td>--}}
+        {{--</tr>--}}
         </tbody>
     </table>
 

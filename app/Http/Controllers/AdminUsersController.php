@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Session;
 
 class AdminUsersController extends Controller
 {
@@ -47,23 +48,21 @@ class AdminUsersController extends Controller
     {
 
 
-//        $input = $request->all();
+        $input = $request->all();
 
-        if($file = $request->file('photo_id')){
+        if($file = $request->file('photo_id')) {
+
             $name = time() . $file->getClientOriginalName();
 
             $file->move('images', $name);
-            $photo = Photo::create(['file' => $name]);
+            $photo = Photo::create(['file'=>$name]);
 
             $input['photo_id'] = $photo->id;
-
         }
 
-//        $input['password'] = bcrypt($request->password);
         User::create($input);
 
         return redirect('/admin/users');
-
 //        return $request->all();
     }
 
@@ -132,10 +131,17 @@ class AdminUsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return string
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        unlink(public_path() . $user->photo->file);
+        $user->delete();
+
+        Session::flash('deleted_user', 'The user has been deleted');
+
+        return redirect('/admin/users');
     }
 }
